@@ -1,0 +1,3 @@
+(library
+ (name exs)
+ (libraries base stdio))

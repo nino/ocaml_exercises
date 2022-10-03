@@ -1,0 +1,3 @@
+(test
+ (name exs_test)
+ (libraries exs base stdio ounit2 qcheck))
