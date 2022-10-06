@@ -3,3 +3,4 @@ module Bob = Bob
 module Bases = Bases
 module Beers = Beers
 module Binary_search = Binary_search
+module Luhn = Luhn
