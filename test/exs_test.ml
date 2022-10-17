@@ -10,3 +10,4 @@ let () = Word_count_test.run_test ()
 
 (* let () = Prime_factors_test.run_test () *)
 let () = Roman_numerals_test.run_test ()
+let () = Say_test.run_test ()
