@@ -1,5 +1,9 @@
 open Base
 
+(*
+ * This is the worst thing I have ever written.
+ *)
+
 let unwrap = function Ok x -> x | Error err -> failwith err
 
 let magnitudes =
