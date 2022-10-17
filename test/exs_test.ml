@@ -7,4 +7,6 @@ let () = Luhn_test.run_test ()
 let () = Matching_brackets_test.run_test ()
 let () = Phone_number_test.run_test ()
 let () = Word_count_test.run_test ()
+
 (* let () = Prime_factors_test.run_test () *)
+let () = Roman_numerals_test.run_test ()
