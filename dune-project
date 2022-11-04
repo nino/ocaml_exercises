@@ -19,7 +19,7 @@
  (name ocaml_exercises)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml dune)
+ (depends ocaml dune stdio base)
  (tags
   (topics "to describe" your project)))
 
