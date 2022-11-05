@@ -1,0 +1,5 @@
+(executable
+  (name advent2015)
+  (public_name advent2015)
+  (libraries base stdio)
+  (flags -open Base))
