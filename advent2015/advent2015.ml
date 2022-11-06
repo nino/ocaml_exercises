@@ -1,5 +1,6 @@
 let call_and_flush f =
   f ();
+  Stdio.printf "\n";
   Stdio.Out_channel.flush Stdio.Out_channel.stdout
 
 let () = Stdio.printf "Yo\n"
