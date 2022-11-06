@@ -1,5 +1,3 @@
-open Base
-
 module Box = struct
   type t = { width : int; height : int; depth : int }
 
@@ -66,10 +64,8 @@ let sum_ints = List.fold ~init:0 ~f:Int.( + )
 let run () =
   Stdio.printf "Advent of code 2015, day 2!\n";
 
-  let inputs =
-    Stdio.In_channel.read_lines
-      "/Users/nino/code-friends/ocaml_exercises/advent2015/day2input.txt"
-  in
+  let input_path = Utils.input_path_for_day 2 in
+  let inputs = Stdio.In_channel.read_lines input_path in
   match Box.boxes_of_strings inputs with
   | Error err -> Stdio.printf "Failed because %s\n" err
   | Ok boxes ->
