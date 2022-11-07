@@ -4,8 +4,8 @@ end
 
 let call_and_flush (module M : AdventDay) =
   M.run ();
-  Stdio.printf "\n";
-  Stdio.Out_channel.flush Stdio.Out_channel.stdout
+  (* `%!` flushes, I think?? *)
+  Stdio.printf "\n%!"
 
 let () = Stdio.printf "Yo\n"
 let () = call_and_flush (module Day2)
