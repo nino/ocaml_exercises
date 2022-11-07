@@ -12,7 +12,7 @@ let mine_coin ?(extra_hard = false) secret_key =
   loop 1
 
 let run () =
-  Stdio.printf "Advent of code 2015, day 4!\n";
+  Utils.greet 4;
 
   let input = "ckczppom" in
   let coin_number1 = mine_coin input in

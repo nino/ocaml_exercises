@@ -54,7 +54,7 @@ let process_input_part_2 input =
     (Hashtbl.length recipients)
 
 let run () =
-  Stdio.printf "Advent of code 2015, day 3!\n";
+  Utils.greet 3;
 
   let input_path =
     Caml.Filename.concat (Utils.assets_path ()) "day3input.txt"

@@ -55,7 +55,7 @@ let test_nice_2 s should_be =
     (if is_nice2 s then "nice" else "not nice")
 
 let run () =
-  Stdio.printf "Advent of code 2015, day 5!\n";
+  Utils.greet 5;
 
   let input_path = Utils.input_path_for_day 5 in
   let inputs = Stdio.In_channel.read_lines input_path in

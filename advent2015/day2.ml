@@ -1,5 +1,6 @@
 module Box = struct
   type t = { width : int; height : int; depth : int }
+  [@@deriving compare, sexp_of, hash]
 
   let parse input =
     let components =
@@ -8,7 +9,7 @@ module Box = struct
     in
     match components with
     | [ Ok width; Ok height; Ok depth ] -> Ok { width; height; depth }
-    | _ -> Error ("invalid box spec: ›" ^ input ^ "‹")
+    | _ -> Error ("invalid box spec: ‹" ^ input ^ "›")
 
   let surface_area { width; height; depth } =
     (2 * (width * height)) + (2 * (width * depth)) + (2 * (depth * height))
@@ -62,15 +63,21 @@ let process_inputs inputs =
 let sum_ints = List.fold ~init:0 ~f:Int.( + )
 
 let run () =
-  Stdio.printf "Advent of code 2015, day 2!\n";
+  Utils.greet 2;
 
   let input_path = Utils.input_path_for_day 2 in
-  let inputs = Stdio.In_channel.read_lines input_path in
-  match Box.boxes_of_strings inputs with
-  | Error err -> Stdio.printf "Failed because %s\n" err
-  | Ok boxes ->
-      let total_paper = boxes |> List.map ~f:Box.paper_required |> sum_ints in
-      Stdio.printf "You need %d sqft of paper\n" total_paper;
+  match Stdio.In_channel.read_lines input_path with
+  | exception ex -> Stdio.printf "%s\n" (Exn.to_string ex)
+  | inputs -> (
+      match Box.boxes_of_strings inputs with
+      | Error err -> Stdio.printf "Failed because %s\n" err
+      | Ok boxes ->
+          let total_paper =
+            boxes |> List.map ~f:Box.paper_required |> sum_ints
+          in
+          Stdio.printf "You need %d sqft of paper\n" total_paper;
 
-      let total_ribbon = boxes |> List.map ~f:Box.ribbon_required |> sum_ints in
-      Stdio.printf "You need %d ft of ribbon\n" total_ribbon
+          let total_ribbon =
+            boxes |> List.map ~f:Box.ribbon_required |> sum_ints
+          in
+          Stdio.printf "You need %d ft of ribbon\n" total_ribbon)

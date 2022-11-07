@@ -1,3 +1,5 @@
+let greet day = Stdio.printf "Advent of Code 2015, day %d!\n%!" day
+
 let assets_path () =
   let cwd = Unix.getcwd () in
   Caml.Filename.concat cwd "advent2015/assets"
