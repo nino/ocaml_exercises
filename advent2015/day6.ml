@@ -1,12 +1,20 @@
 module Instruction = struct
-  type action = Switch_on | Switch_off | Toggle
+  type action =
+    | Switch_on
+    | Switch_off
+    | Toggle
+    | Increase
+    | Decrease
+    | Increase_double
+
   type rect = { from_corner : int * int; to_corner : int * int }
   type t = action * rect
+  type interpretation_mode = Standard | Elvish
 
   let create action from_x from_y to_x to_y =
     (action, { from_corner = (from_x, from_y); to_corner = (to_x, to_y) })
 
-  let t_of_string string =
+  let t_of_string ~mode string =
     let pattern =
       Re.Pcre.re
         {|^\s*(turn on|turn off|toggle) +(\d+),(\d+) +through +(\d+),(\d+)\s*$|}
@@ -17,10 +25,13 @@ module Instruction = struct
         (* The matches from the regex should only contain numbers, so none of
            these conversions should never raise an exception *)
         let action =
-          match action with
-          | "turn on" -> Switch_on
-          | "turn off" -> Switch_off
-          | "toggle" -> Toggle
+          match (mode, action) with
+          | Standard, "turn on" -> Switch_on
+          | Standard, "turn off" -> Switch_off
+          | Standard, "toggle" -> Toggle
+          | Elvish, "turn on" -> Increase
+          | Elvish, "turn off" -> Decrease
+          | Elvish, "toggle" -> Increase_double
           | _ -> failwith "reached unreachable code"
         in
         let from_x = Int.of_string from_x in
@@ -30,8 +41,8 @@ module Instruction = struct
         Ok (create action from_x from_y to_x to_y)
     | _ -> Error (Error.of_string "Unable to parse instruction")
 
-  let t_list_of_string_list strlist =
-    List.map strlist ~f:t_of_string |> Result.all
+  let t_list_of_string_list ~mode strlist =
+    List.map strlist ~f:(fun x -> t_of_string ~mode x) |> Result.all
 end
 
 module Grid = struct
@@ -61,12 +72,17 @@ module Grid = struct
     | Instruction.Switch_on -> update grid rect (fun _ -> 1)
     | Instruction.Switch_off -> update grid rect (fun _ -> 0)
     | Instruction.Toggle -> update grid rect (fun x -> if x = 1 then 0 else 1)
+    | Instruction.Increase -> update grid rect (fun x -> x + 1)
+    | Instruction.Decrease ->
+        update grid rect (fun x -> if x = 0 then 0 else x - 1)
+    | Instruction.Increase_double -> update grid rect (fun x -> x + 2)
 
   let count_lit grid = Array.count grid.lamps ~f:(fun x -> x > 0)
+  let total_brightness grid = Array.fold ~init:0 ~f:( + ) grid.lamps
 end
 
-let execute raw_instructions =
-  match Instruction.t_list_of_string_list raw_instructions with
+let execute ~mode raw_instructions =
+  match Instruction.t_list_of_string_list ~mode raw_instructions with
   | Error err -> Error err
   | Ok parsed_instructions ->
       let grid = Grid.create 1000 in
@@ -90,8 +106,16 @@ let run () =
   | exception ex ->
       Stdio.printf "Error reading input: %s\n%!" (Exn.to_string ex)
   | raw_instructions -> (
-      match execute raw_instructions with
+      (match execute ~mode:Standard raw_instructions with
       | Ok finished_grid ->
-          Stdio.printf "%d lights are lit.\n" (Grid.count_lit finished_grid)
+          Stdio.printf "In standard mode, %d lights are lit.\n"
+            (Grid.count_lit finished_grid)
+      | Error err ->
+          Stdio.printf "Unable to run program: %s\n" (Error.to_string_hum err));
+
+      match execute ~mode:Elvish raw_instructions with
+      | Ok finished_grid ->
+          Stdio.printf "In Elvish mode, the total brightness is %d.\n"
+            (Grid.total_brightness finished_grid)
       | Error err ->
           Stdio.printf "Unable to run program: %s\n" (Error.to_string_hum err))
