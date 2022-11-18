@@ -1,7 +1,7 @@
 (executable
   (name advent2015)
   (public_name advent2015)
-  (libraries base base.md5 stdio unix)
+  (libraries base base.md5 stdio unix re)
   (preprocess
     (pps ppx_compare ppx_hash ppx_show ppx_sexp_conv))
   (flags -open Base))
