@@ -35,9 +35,9 @@ module Instruction = struct
 end
 
 module Grid = struct
-  type t = { size : int; mutable lamps : bool array }
+  type t = { size : int; mutable lamps : int array }
 
-  let create size = { size; lamps = Array.create ~len:(size * size) false }
+  let create size = { size; lamps = Array.create ~len:(size * size) 0 }
   let coord grid x y = x + (grid.size * y)
 
   let update grid rect update_fun =
@@ -58,11 +58,11 @@ module Grid = struct
 
   let run grid (action, rect) =
     match action with
-    | Instruction.Switch_on -> update grid rect (fun _ -> true)
-    | Instruction.Switch_off -> update grid rect (fun _ -> false)
-    | Instruction.Toggle -> update grid rect (fun x -> not x)
+    | Instruction.Switch_on -> update grid rect (fun _ -> 1)
+    | Instruction.Switch_off -> update grid rect (fun _ -> 0)
+    | Instruction.Toggle -> update grid rect (fun x -> if x = 1 then 0 else 1)
 
-  let count_lit grid = Array.count grid.lamps ~f:(fun x -> x)
+  let count_lit grid = Array.count grid.lamps ~f:(fun x -> x > 0)
 end
 
 let execute raw_instructions =
