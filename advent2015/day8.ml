@@ -18,9 +18,28 @@ let memory_bytes line =
          | Normal, _ -> incr bytes);
   !bytes
 
+let to_escaped_string string =
+  let buf = Buffer.create (String.length string) in
+  Buffer.add_string buf {|"|};
+  string
+  |> String.iter (function
+       | '"' ->
+           Buffer.add_char buf '\\';
+           Buffer.add_char buf '"'
+       | '\\' -> Buffer.add_string buf {|\\|}
+       | other -> Buffer.add_char buf other);
+  Buffer.add_string buf {|"|};
+  Buffer.contents buf
+
 let size_of_source_minus_size_of_data_exn lines =
   lines
   |> List.map (fun line -> source_code_bytes line - memory_bytes line)
+  |> List.fold_left ( + ) 0
+
+let size_of_escaped_minus_size_of_source_exn lines =
+  lines
+  |> List.map (fun line ->
+         String.length (to_escaped_string line) - source_code_bytes line)
   |> List.fold_left ( + ) 0
 
 let tests () =
@@ -39,4 +58,6 @@ let run () =
         (Printexc.to_string ex)
   | lines ->
       let part1 = size_of_source_minus_size_of_data_exn lines in
-      Stdio.printf "Part 1: The difference is %d\n%!" part1
+      Stdio.printf "Part 1: The difference is %d\n%!" part1;
+      let part2 = size_of_escaped_minus_size_of_source_exn lines in
+      Stdio.printf "Part 2: The difference is %d\n%!" part2
