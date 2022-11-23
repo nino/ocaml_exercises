@@ -1,3 +1,5 @@
+open Base
+
 module SantaPosition = struct
   type t = int * int [@@deriving compare, sexp_of, hash]
 end

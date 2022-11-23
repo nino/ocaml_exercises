@@ -1,3 +1,5 @@
+open Base
+
 module Connection = struct
   type source = Constant of int | Identifier of string
 

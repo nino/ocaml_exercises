@@ -1,3 +1,5 @@
+open Base
+
 module Box = struct
   type t = { width : int; height : int; depth : int }
   [@@deriving compare, sexp_of, hash]

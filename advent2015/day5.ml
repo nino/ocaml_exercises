@@ -1,3 +1,5 @@
+open Base
+
 let at_least_3_vowels string =
   let num_vowels =
     String.count string ~f:(function

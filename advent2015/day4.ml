@@ -1,3 +1,5 @@
+open Base
+
 let does_number_produce_valid_hash ?(extra_hard = false) secret_key number =
   let hash_input = secret_key ^ Int.to_string number in
   let hex = hash_input |> Md5_lib.string |> Md5_lib.to_hex in

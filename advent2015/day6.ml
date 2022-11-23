@@ -1,3 +1,5 @@
+open Base
+
 module Instruction = struct
   type action =
     | Switch_on
