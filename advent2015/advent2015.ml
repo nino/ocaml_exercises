@@ -15,4 +15,5 @@ let () =
   run_and_flush (module Day5);
   run_and_flush (module Day6);
   run_and_flush (module Day7);
-  run_and_flush (module Day8)
+  run_and_flush (module Day8);
+  run_and_flush (module Day9)
