@@ -25,10 +25,10 @@ module Box = struct
 
   let paper_required box = surface_area box + smallest_side_area box
 
-  let process input =
-    match parse input with
-    | Ok box -> Ok (paper_required box)
-    | Error err -> Error err
+  (* let process input = *)
+  (*   match parse input with *)
+  (*   | Ok box -> Ok (paper_required box) *)
+  (*   | Error err -> Error err *)
 
   let boxes_of_strings strings =
     let rec loop acc strings =
@@ -48,19 +48,19 @@ module Box = struct
   let ribbon_required box = smallest_side_perimeter box + volume box
 end
 
-let process_inputs inputs =
-  let rec loop acc inputs =
-    match acc with
-    | Ok total -> (
-        match inputs with
-        | [] -> Ok total
-        | hd :: tl -> (
-            match Box.process hd with
-            | Ok paper -> loop (Ok (total + paper)) tl
-            | Error err -> Error err))
-    | Error err -> Error err
-  in
-  loop (Ok 0) inputs
+(* let process_inputs inputs = *)
+(*   let rec loop acc inputs = *)
+(*     match acc with *)
+(*     | Ok total -> ( *)
+(*         match inputs with *)
+(*         | [] -> Ok total *)
+(*         | hd :: tl -> ( *)
+(*             match Box.process hd with *)
+(*             | Ok paper -> loop (Ok (total + paper)) tl *)
+(*             | Error err -> Error err)) *)
+(*     | Error err -> Error err *)
+(*   in *)
+(*   loop (Ok 0) inputs *)
 
 let sum_ints = List.fold ~init:0 ~f:Int.( + )
 

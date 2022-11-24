@@ -24,8 +24,8 @@ let is_nice1 string =
   at_least_3_vowels string && at_least_one_double string
   && no_forbidden_seqs string
 
-let sexp_of_set (s : (string, String.comparator_witness) Set.t) =
-  List.sexp_of_t String.sexp_of_t (Set.to_list s)
+(* let sexp_of_set (s : (string, String.comparator_witness) Set.t) = *)
+(*   List.sexp_of_t String.sexp_of_t (Set.to_list s) *)
 
 let has_nonoverlapping_double_pair string =
   let len = String.length string in
@@ -52,9 +52,9 @@ let has_xyx_pattern string =
 let is_nice2 string =
   has_nonoverlapping_double_pair string && has_xyx_pattern string
 
-let test_nice_2 s should_be =
-  Stdio.printf "“%s” should be %s, and is: %s\n" s should_be
-    (if is_nice2 s then "nice" else "not nice")
+(* let test_nice_2 s should_be = *)
+(*   Stdio.printf "“%s” should be %s, and is: %s\n" s should_be *)
+(*     (if is_nice2 s then "nice" else "not nice") *)
 
 let run () =
   Utils.greet 5;
