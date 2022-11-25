@@ -7,9 +7,9 @@ let pattern = Re.compile @@ Re.Pcre.re {|(1+|2+|3+|4+|5+|6+|7+|8+|9+|0+)|}
 
 let iterate input =
   let sequences =
-    Re.all pattern input |> ListLabels.map ~f:(fun g -> Re.Group.get g 0)
+    Re.all pattern input |> CCListLabels.map ~f:(fun g -> Re.Group.get g 0)
   in
-  ListLabels.map sequences ~f:(fun seq ->
+  CCListLabels.map sequences ~f:(fun seq ->
       string_of_int (String.length seq) ^ String.sub seq 0 1)
   |> String.concat ""
 

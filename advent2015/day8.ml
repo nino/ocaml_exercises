@@ -21,13 +21,12 @@ let memory_bytes line =
 let to_escaped_string string =
   let buf = Buffer.create (String.length string) in
   Buffer.add_string buf {|"|};
-  string
-  |> String.iter (function
-       | '"' ->
-           Buffer.add_char buf '\\';
-           Buffer.add_char buf '"'
-       | '\\' -> Buffer.add_string buf {|\\|}
-       | other -> Buffer.add_char buf other);
+  StringLabels.iter string ~f:(function
+    | '"' ->
+        Buffer.add_char buf '\\';
+        Buffer.add_char buf '"'
+    | '\\' -> Buffer.add_string buf {|\\|}
+    | other -> Buffer.add_char buf other);
   Buffer.add_string buf {|"|};
   Buffer.contents buf
 

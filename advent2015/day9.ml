@@ -2,13 +2,11 @@
    tiny bit of Containers instead. Maybe I should be using `open Containers`? *)
 
 type city = string
+[@@deriving ord]
 
 module CityPair = struct
   type t = city * city
-
-  let compare (a, b) (c, d) =
-    let first = compare a c in
-    if first <> 0 then first else compare b d
+  [@@deriving ord]
 end
 
 module DistanceMap = Map.Make (CityPair)
