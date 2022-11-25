@@ -3,7 +3,8 @@ module type AdventDay = sig
 end
 
 let run_and_flush (module M : AdventDay) =
-  (try M.run () with _ -> Stdio.printf "Failed to run\n");
+  (try M.run ()
+   with ex -> Stdio.printf "Failed to run: %s\n" (Printexc.to_string ex));
   (* `%!` flushes, I think?? *)
   Stdio.printf "\n%!"
 
