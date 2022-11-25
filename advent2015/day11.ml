@@ -55,10 +55,13 @@ let find_next_password current_password =
       let next_try = incr_string attempt in
       if String.length next_try > 8 then "No password found" else loop next_try
   in
-  loop current_password
+  loop (incr_string current_password)
 
 let run () =
   Utils.greet 11;
   let input = "hxbxwxba" in
   let next_password = find_next_password input in
-  Printf.printf "Santa's next password should be %s.\n" next_password
+  Printf.printf "Santa's next password should be %s.\n" next_password;
+
+  let next_password = find_next_password next_password in
+  Printf.printf "And after that, Santa's next password should be %s.\n" next_password
