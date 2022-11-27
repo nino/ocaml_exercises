@@ -68,4 +68,15 @@ let run () =
       (-Int.max_int) (permutations people)
   in
   Printf.printf "Max happiness is %d.\n%!" greatest_happiness;
+
+  let people = StringSet.add "Nino" people in
+  let greatest_happiness =
+    Seq.fold
+      (fun happiness arrangement ->
+        let new_happiness = happiness_for_arrangement happinesses arrangement in
+        Int.max happiness new_happiness)
+      (-Int.max_int) (permutations people)
+  in
+  Printf.printf "Max happiness when I'm there is %d.\n%!" greatest_happiness;
+
   ()
