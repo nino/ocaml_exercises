@@ -10,7 +10,6 @@ module Instruction = struct
     | Increase_double
 
   type rect = { from_corner : int * int; to_corner : int * int }
-  type t = action * rect
   type interpretation_mode = Standard | Elvish
 
   let create action from_x from_y to_x to_y =
@@ -48,7 +47,7 @@ module Instruction = struct
 end
 
 module Grid = struct
-  type t = { size : int; mutable lamps : int array }
+  type t = { size : int; lamps : int array }
 
   let create size = { size; lamps = Array.create ~len:(size * size) 0 }
   let coord grid x y = x + (grid.size * y)

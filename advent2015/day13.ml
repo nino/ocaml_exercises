@@ -1,8 +1,6 @@
 open Containers
 module StringSet = Set.Make (String)
 
-type pair = string * string
-
 (* TODO Need to find a way to make this work for all kinds of sets. *)
 let rec permutations items =
   if StringSet.cardinal items = 1 then Seq.return (StringSet.elements items)
