@@ -72,7 +72,7 @@ let run () =
   let reindeers = List.filter_map lines ~f:parse in
   let winners = winners_after_seconds ~sec:2503 reindeers in
   (match winners with
-  | [ (deer, dist) ] ->
+  | (deer, dist) :: _tl ->
       Printf.printf "The winner is %s and they flew %d km.\n%!" deer.name dist
   | _ ->
       Printf.printf
