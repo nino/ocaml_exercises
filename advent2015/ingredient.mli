@@ -1,5 +1,4 @@
 open ContainersLabels
-module StringMap : Map.S
 
 type t = {
   capacity : int;
@@ -9,7 +8,7 @@ type t = {
   calories : int;
 }
 
-type cupboard = t StringMap.t
+type cupboard
 
 val empty_cupboard : cupboard
 val cupboard_add : cupboard -> string -> t -> cupboard
