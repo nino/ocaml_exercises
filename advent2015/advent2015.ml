@@ -22,4 +22,6 @@ let () =
   run_and_flush (module Day11);
   run_and_flush (module Day12);
   run_and_flush (module Day13);
-  run_and_flush (module Day14)
+  run_and_flush (module Day14);
+  run_and_flush (module Day15);
+  ()
