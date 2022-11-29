@@ -1,5 +1,4 @@
 open ContainersLabels
-module StringMap = Map.Make (String)
 
 let parse_and_add cupboard line =
   let pattern =
