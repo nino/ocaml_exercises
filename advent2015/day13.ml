@@ -1,17 +1,18 @@
 open Containers
 module StringSet = Set.Make (String)
 
-(* TODO Need to find a way to make this work for all kinds of sets. *)
-let rec permutations items =
-  if StringSet.cardinal items = 1 then Seq.return (StringSet.elements items)
-  else
-    let cities_seq = StringSet.to_seq items in
-    cities_seq
-    |> Seq.flat_map (fun city ->
-           let other_cities = StringSet.remove city items in
-           let permutations_of_others = permutations other_cities in
-           permutations_of_others
-           |> Seq.map (fun permutation -> city :: permutation))
+module Perm (S : Set.S) = struct
+  let rec permutations items =
+    if S.cardinal items = 1 then Seq.return (S.elements items)
+    else
+      let cities_seq = S.to_seq items in
+      cities_seq
+      |> Seq.flat_map (fun city ->
+             let other_cities = S.remove city items in
+             let permutations_of_others = permutations other_cities in
+             permutations_of_others
+             |> Seq.map (fun permutation -> city :: permutation))
+end
 
 let parse happinesses people_tbl line =
   let pattern =
@@ -58,12 +59,14 @@ let run () =
   let people =
     StringSet.add_seq (Hashtbl.to_seq_keys people_tbl) StringSet.empty
   in
+  let module StringPerm = Perm (StringSet) in
   let greatest_happiness =
     Seq.fold
       (fun happiness arrangement ->
         let new_happiness = happiness_for_arrangement happinesses arrangement in
         Int.max happiness new_happiness)
-      (-Int.max_int) (permutations people)
+      (-Int.max_int)
+      (StringPerm.permutations people)
   in
   Printf.printf "Max happiness is %d.\n%!" greatest_happiness;
 
@@ -73,7 +76,8 @@ let run () =
       (fun happiness arrangement ->
         let new_happiness = happiness_for_arrangement happinesses arrangement in
         Int.max happiness new_happiness)
-      (-Int.max_int) (permutations people)
+      (-Int.max_int)
+      (StringPerm.permutations people)
   in
   Printf.printf "Max happiness when I'm there is %d.\n%!" greatest_happiness;
 

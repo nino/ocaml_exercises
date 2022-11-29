@@ -7,8 +7,6 @@ type reindeer = {
   resting_time : int;
 }
 
-module ReindeerMap = Map.Make (String)
-
 let parse line =
   let pattern =
     Re.compile
