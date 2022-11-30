@@ -54,12 +54,28 @@ let score ~ingredients recipe =
   let texture = attribute_total (fun i -> i.Ingredient.texture) in
   capacity * durability * flavor * texture
 
-let get_optimal_recipe ingredients =
+let count_calories ~cupboard recipe =
+  StringMap.fold
+    (fun ingredient_name amount sum ->
+      let ingredient = Ingredient.cupboard_find_exn cupboard ingredient_name in
+      sum + (amount * ingredient.Ingredient.calories))
+    recipe 0
+
+let get_optimal_recipe ?calories ingredients =
   let ingredient_names = Ingredient.ingredients_in_cupboard ingredients in
   let all_recipes = get_all_recipes ingredient_names in
+  let recipes_with_correct_calories =
+    match calories with
+    | Some calorie_count ->
+        Seq.filter
+          (fun recipe ->
+            count_calories ~cupboard:ingredients recipe = calorie_count)
+          all_recipes
+    | None -> all_recipes
+  in
   Seq.fold
     (fun (best_recipe, best_score) next_recipe ->
       let next_score = score ~ingredients next_recipe in
       if next_score > best_score then (next_recipe, next_score)
       else (best_recipe, best_score))
-    (StringMap.empty, 0) all_recipes
+    (StringMap.empty, 0) recipes_with_correct_calories

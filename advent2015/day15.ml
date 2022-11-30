@@ -29,4 +29,12 @@ let run () =
   Printf.printf "The optimal recipe is:\n%s\n\nand it has the score %d.\n"
     (Sexp.to_string (Recipe.sexp_of_t optimal_recipe))
     score;
+
+  let optimal_recipe, score =
+    Recipe.get_optimal_recipe ~calories:500 cupboard
+  in
+  Printf.printf
+    "The optimal recipe with 500 calories is:\n%s\n\nand it has the score %d.\n"
+    (Sexp.to_string (Recipe.sexp_of_t optimal_recipe))
+    score;
   ()
