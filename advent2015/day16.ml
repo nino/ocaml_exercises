@@ -28,6 +28,39 @@ let satisfies detector_results what_i_remember =
       | None -> true)
     what_i_remember
 
+let satisfies_with_ranges detector_results what_i_remember =
+  (match StringMap.get "children" what_i_remember with
+  | Some x -> x = StringMap.find "children" detector_results
+  | None -> true)
+  && (match StringMap.get "cats" what_i_remember with
+     | Some x -> x > StringMap.find "cats" detector_results
+     | None -> true)
+  && (match StringMap.get "samoyeds" what_i_remember with
+     | Some x -> x = StringMap.find "samoyeds" detector_results
+     | None -> true)
+  && (match StringMap.get "pomeranians" what_i_remember with
+     | Some x -> x < StringMap.find "pomeranians" detector_results
+     | None -> true)
+  && (match StringMap.get "akitas" what_i_remember with
+     | Some x -> x = StringMap.find "akitas" detector_results
+     | None -> true)
+  && (match StringMap.get "vizslas" what_i_remember with
+     | Some x -> x = StringMap.find "vizslas" detector_results
+     | None -> true)
+  && (match StringMap.get "goldfish" what_i_remember with
+     | Some x -> x < StringMap.find "goldfish" detector_results
+     | None -> true)
+  && (match StringMap.get "trees" what_i_remember with
+     | Some x -> x > StringMap.find "trees" detector_results
+     | None -> true)
+  && (match StringMap.get "cars" what_i_remember with
+     | Some x -> x = StringMap.find "cars" detector_results
+     | None -> true)
+  &&
+  match StringMap.get "perfumes" what_i_remember with
+  | Some x -> x = StringMap.find "perfumes" detector_results
+  | None -> true
+
 let run () =
   Utils.greet 16;
 
@@ -53,5 +86,12 @@ let run () =
     List.find sues ~f:(fun (_num, attrs) -> satisfies detector_results attrs)
   in
   Printf.printf "The Sue that gave me the gift is %d.\n" the_sue_num;
+
+  let the_sue_num, _attrs =
+    List.find sues ~f:(fun (_num, attrs) ->
+        satisfies_with_ranges detector_results attrs)
+  in
+  Printf.printf "With the ranges thing, the Sue that gave me the gift is %d.\n"
+    the_sue_num;
 
   ()
