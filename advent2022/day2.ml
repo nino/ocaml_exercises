@@ -9,10 +9,28 @@ let decrypt_move = function
   | 'C' | 'Z' -> Scissors
   | _ -> failwith "Unknown move"
 
-let decrypt_line line =
+let winning_move opponent =
+  match opponent with Rock -> Paper | Paper -> Scissors | Scissors -> Rock
+
+let drawing_move opponent = opponent
+
+let losing_move opponent =
+  match opponent with Paper -> Rock | Scissors -> Paper | Rock -> Scissors
+
+let determine_moves2 opponent me =
+  let opponent = decrypt_move opponent in
+  match me with
+  | 'X' -> (opponent, losing_move opponent)
+  | 'Y' -> (opponent, drawing_move opponent)
+  | 'Z' -> (opponent, winning_move opponent)
+  | _ -> failwith "Unknown character"
+
+let decrypt_line ?(part2 = false) line =
   let chars = String.to_array line in
   match chars with
-  | [| opponent; ' '; me |] -> (decrypt_move opponent, decrypt_move me)
+  | [| opponent; ' '; me |] ->
+      if not part2 then (decrypt_move opponent, decrypt_move me)
+      else determine_moves2 opponent me
   | _ -> failwith "Invalid line"
 
 let score opponent me =
@@ -34,4 +52,11 @@ let run () =
         sum + score opponent me)
   in
   printf "My score is %d.\n" my_score;
+
+  let rounds' = List.map input ~f:(decrypt_line ~part2:true) in
+  let my_score =
+    List.fold rounds' ~init:0 ~f:(fun sum (opponent, me) ->
+        sum + score opponent me)
+  in
+  printf "With the new strategy, my score is %d.\n" my_score;
   ()
