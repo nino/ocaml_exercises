@@ -16,4 +16,5 @@ let () =
   Stdio.printf "\n\n";
   run (module Day1);
   run (module Day2);
+  run (module Day3);
   ()
