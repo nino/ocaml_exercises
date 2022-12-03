@@ -11,6 +11,19 @@ let priority item =
       failwith @@ "You can only get priorities for alphabetic characters, not '"
       ^ Char.to_string item ^ "'."
 
+let badge group =
+  (* Yes, this function raises an exception, while [find_duplicate_item] returns
+     an option, and this function is just hanging out here, while
+     [find_duplicate_item] sits inside the [Rucksack]. I don't care. For now. *)
+  let sets =
+    List.map group ~f:(fun group ->
+        String.to_list group |> Set.of_list (module Char))
+  in
+  let inter = List.reduce sets ~f:Set.inter in
+  match inter with
+  | Some actual_inter -> Set.to_list actual_inter |> List.hd_exn
+  | None -> failwith "no items"
+
 module Rucksack = struct
   type t = string
 
@@ -81,4 +94,11 @@ let run () =
     List.fold dupes ~init:0 ~f:(fun sum item -> sum + priority item)
   in
   printf "The total priority is %d.\n" priority_sum;
+
+  let elf_groups = List.groupi rucksacks ~break:(fun i _ _ -> i % 3 = 0) in
+  let badge_priority_sum =
+    List.fold elf_groups ~init:0 ~f:(fun sum group ->
+        sum + (group |> badge |> priority))
+  in
+  printf "The sum of the group badge priorities is %d.\n" badge_priority_sum;
   ()
