@@ -9,6 +9,13 @@ module Range = struct
 
   let contains (start1, stop1) (start2, stop2) =
     start1 <= start2 && stop1 >= stop2
+
+  let overlaps a b =
+    let overlaps' (start1, stop1) (start2, stop2) =
+      (start2 <= start1 && start1 <= stop2)
+      || (start2 <= stop1 && stop1 <= stop2)
+    in
+    overlaps' a b || overlaps' b a
 end
 
 let run () =
@@ -22,9 +29,14 @@ let run () =
               Range.create (Int.of_string start2) (Int.of_string stop2) )
         | _ -> failwith "Invalid line")
   in
+  (* Part 1 *)
   let fully_contained_count =
     List.count pairs ~f:(fun (a, b) -> Range.contains a b || Range.contains b a)
   in
   printf "There are %d pairs where one fully contains the other.\n"
     fully_contained_count;
+
+  (* Part 2 *)
+  let overlap_count = List.count pairs ~f:(fun (a, b) -> Range.overlaps a b) in
+  printf "There are %d pairs with overlap.\n" overlap_count;
   ()
