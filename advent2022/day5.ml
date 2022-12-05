@@ -42,6 +42,17 @@ let execute stacks instructions =
         Stack.push (Hashtbl.find_exn stacks dest) crate
       done)
 
+let execute' stacks instructions =
+  List.iter instructions ~f:(fun (count, source, dest) ->
+      let crane = Stack.create () in
+      for _ = 1 to count do
+        let crate = Stack.pop_exn (Hashtbl.find_exn stacks source) in
+        Stack.push crane crate
+      done;
+      for _ = 1 to count do
+        Stack.push (Hashtbl.find_exn stacks dest) (Stack.pop_exn crane)
+      done)
+
 let run () =
   let input = In_channel.read_all (Utils.input_path_for_day 5) in
   let stacks, instructions = parse_input_exn input in
@@ -51,4 +62,13 @@ let run () =
         Stack.top_exn (Hashtbl.find_exn stacks (idx + 1)))
   in
   printf "The top crates are %s.\n" (String.of_char_list top_crates);
+
+  let stacks, instructions = parse_input_exn input in
+  execute' stacks instructions;
+  let top_crates =
+    List.init (Hashtbl.length stacks) ~f:(fun idx ->
+        Stack.top_exn (Hashtbl.find_exn stacks (idx + 1)))
+  in
+  printf "With the new truck, the top crates are %s.\n"
+    (String.of_char_list top_crates);
   ()
