@@ -5,8 +5,8 @@ let day = 6
 
 let find_offset ?(num_distinct_chars = 4) str =
   let len = String.length str in
-  let indices = List.range num_distinct_chars (len + 1) in
-  List.find_exn indices ~f:(fun idx ->
+  let indices = Sequence.range num_distinct_chars (len + 1) in
+  Sequence.find_exn indices ~f:(fun idx ->
       let chars = Hash_set.create (module Char) in
       for i = 1 to num_distinct_chars do
         Hash_set.add chars str.[idx - i]
