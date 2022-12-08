@@ -20,4 +20,5 @@ let () =
   run (module Day4);
   run (module Day5);
   run (module Day6);
+  run (module Day7);
   ()
