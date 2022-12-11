@@ -1,6 +1,6 @@
 (executable
   (name advent2022)
   (public_name advent2022)
-  (libraries re base stdio)
+  (libraries re base stdio unix)
   (preprocess
     (pps ppx_jane)))
