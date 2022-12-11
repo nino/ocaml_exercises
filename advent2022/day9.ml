@@ -84,4 +84,15 @@ let run () =
         (Set.add visited_points (Rope.last new_rope), new_rope))
   in
   printf "The tail of the rope visits %d positions at least once.\n"
+    (Set.length visited_points);
+
+  (* Part 2 *)
+  let visited_points, _final_rope =
+    Sequence.fold moves
+      ~init:(Set.empty (module Point), Rope.init ~len:10 ())
+      ~f:(fun (visited_points, rope) delta ->
+        let new_rope = Rope.move rope delta in
+        (Set.add visited_points (Rope.last new_rope), new_rope))
+  in
+  printf "The tail of the rope of length 10 visits %d positions at least once.\n"
     (Set.length visited_points)
