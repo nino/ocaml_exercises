@@ -40,6 +40,20 @@ module CPU = struct
         computer' := run_to_cycle !computer' cycle;
         sum := !sum + signal !computer');
     !sum
+
+  let print_program_output computer =
+    let computer = ref computer in
+    for _ = 1 to 240 do
+      let cursor = !computer.cycle % 40 in
+      if
+        cursor = !computer.x
+        || cursor = !computer.x + 1
+        || cursor = !computer.x - 1
+      then printf "#"
+      else printf ".";
+      if !computer.cycle % 40 = 0 then printf "\n";
+      computer := step !computer
+    done
 end
 
 let tests () =
@@ -53,7 +67,8 @@ let tests () =
   let input = In_channel.read_lines (Utils.extra_path "day10_test2.txt") in
   let program = CPU.compile_exn input in
   let computer = CPU.init_with_program program in
-  printf "%d should be 13140.\n" (CPU.get_sum_of_signals computer)
+  printf "%d should be 13140.\n" (CPU.get_sum_of_signals computer);
+  CPU.print_program_output computer
 
 let run () =
   tests ();
@@ -61,4 +76,7 @@ let run () =
   let program = CPU.compile_exn input in
   let computer = CPU.init_with_program program in
   printf "The sum of the signal strengths is %d.\n"
-    (CPU.get_sum_of_signals computer)
+    (CPU.get_sum_of_signals computer);
+
+  printf "The output for the program is not working, but here's what we get:\n";
+  CPU.print_program_output computer
