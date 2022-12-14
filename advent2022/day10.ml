@@ -68,7 +68,8 @@ let tests () =
   let program = CPU.compile_exn input in
   let computer = CPU.init_with_program program in
   printf "%d should be 13140.\n" (CPU.get_sum_of_signals computer);
-  CPU.print_program_output computer
+  CPU.print_program_output computer;
+  printf "\n"
 
 let run () =
   tests ();
