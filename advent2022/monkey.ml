@@ -1,4 +1,13 @@
 open Base
+open Stdio
+
+let msg msg = print_endline msg
+
+let msgwait msg =
+  print_endline msg;
+  ignore (In_channel.input_line In_channel.stdin)
+
+let itos = Int.to_string
 
 type operand = Int of int | Old [@@deriving sexp_of]
 type operation = Plus of operand | Times of operand [@@deriving sexp_of]
@@ -19,6 +28,7 @@ type monkeys = {
   order : int list;
 }
 
+let str_of_monkey monkey = Sexp.to_string_hum @@ sexp_of_t monkey
 let r = Re.Perl.compile_pat
 let group_get n group = Re.Group.get group n
 
@@ -83,9 +93,14 @@ let do_op = function
   | Plus Old -> ( * ) 2
   | Times Old -> fun old -> old * old
 
-let throw_item monkeys source destination =
+let process_item ?(panic = false) monkey item =
+  if panic then do_op monkey.operation item else do_op monkey.operation item / 3
+
+let throw_item ?(panic = false) monkeys source destination =
   let dest_monkey = Map.find_exn monkeys destination in
   let src_monkey = Map.find_exn monkeys source in
+  msgwait @@ "Throwing item from monkey \n" ^ str_of_monkey src_monkey ^
+  "\nto\n" ^ str_of_monkey dest_monkey;
   match src_monkey.items with
   | [] -> failwith "This shouldn't happen."
   | item :: others ->
@@ -96,7 +111,7 @@ let throw_item monkeys source destination =
                dest_monkey with
                items =
                  List.append dest_monkey.items
-                   [ do_op src_monkey.operation item / 3 ];
+                   [ process_item ~panic src_monkey item ];
              }
       |> Map.set ~key:source ~data:{ src_monkey with items = others }
 
@@ -109,21 +124,41 @@ let log_inspection monkeys id =
   Map.set monkeys ~key:id
     ~data:{ monkey with inspections_done = monkey.inspections_done + 1 }
 
-let rec monkey_do monkeys id =
+let rec monkey_do ?(panic = false) monkeys id =
   let monkey = Map.find_exn monkeys id in
+  msgwait @@ "Monkey " ^ str_of_monkey monkey ^ " does action.";
   match monkey.items with
   | [] -> monkeys
   | hd :: _tl ->
       let monkeys = log_inspection monkeys id in
-      let processed_worry = do_op monkey.operation hd / 3 in
-      monkey_do (throw_item monkeys id (destination monkey processed_worry)) id
+      let processed_worry = process_item ~panic monkey hd in
+      msgwait @@ "Item processed from " ^ itos hd ^ " to "
+      ^ itos processed_worry ^ ".";
+      monkey_do ~panic
+        (throw_item ~panic monkeys id (destination monkey processed_worry))
+        id
 
-let iterate { individuals; order } =
+let print_inspections individuals =
+  msg "After the round, here are the inspection numbers:";
+  List.iter (Map.data individuals) ~f:(fun monkey ->
+      msg
+        ("Monkey " ^ itos monkey.id ^ " did "
+        ^ itos monkey.inspections_done
+        ^ " inspections."));
+  msgwait "."
+
+let iterate ?(panic = false) { individuals; order } =
   let individuals' =
     List.fold order ~init:individuals ~f:(fun individuals id ->
-        monkey_do individuals id)
+        monkey_do ~panic individuals id)
   in
+  print_inspections individuals;
   { individuals = individuals'; order }
+
+let rec iterate_times ?(panic = false) times monkeys =
+  match times with
+  | 1 -> iterate ~panic monkeys
+  | n -> iterate_times (n - 1) (iterate ~panic monkeys)
 
 let monkey_business { individuals; _ } =
   let rec loop (max1, max2) monkeylist =
