@@ -1,0 +1,6 @@
+(executable
+  (name advent2022)
+  (public_name advent2022)
+  (libraries re base stdio unix ANSITerminal)
+  (preprocess
+    (pps ppx_jane)))

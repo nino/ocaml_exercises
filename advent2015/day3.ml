@@ -58,9 +58,7 @@ let process_input_part_2 input =
 let run () =
   Utils.greet 3;
 
-  let input_path =
-    Caml.Filename.concat (Utils.assets_path ()) "day3input.txt"
-  in
+  let input_path = Utils.input_path_for_day 3 in
   match Stdio.In_channel.read_all input_path with
   | input ->
       process_input_part_1 input;
