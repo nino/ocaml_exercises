@@ -1,19 +1,6 @@
 open Containers
 module StringSet = Set.Make (String)
 
-module Perm (S : Set.S) = struct
-  let rec permutations items =
-    if S.cardinal items = 1 then Seq.return (S.elements items)
-    else
-      let cities_seq = S.to_seq items in
-      cities_seq
-      |> Seq.flat_map (fun city ->
-             let other_cities = S.remove city items in
-             let permutations_of_others = permutations other_cities in
-             permutations_of_others
-             |> Seq.map (fun permutation -> city :: permutation))
-end
-
 let parse happinesses people_tbl line =
   let pattern =
     Re.compile
@@ -59,7 +46,7 @@ let run () =
   let people =
     StringSet.add_seq (Hashtbl.to_seq_keys people_tbl) StringSet.empty
   in
-  let module StringPerm = Perm (StringSet) in
+  let module StringPerm = Util.Permutator.Make (StringSet) in
   let greatest_happiness =
     Seq.fold
       (fun happiness arrangement ->
