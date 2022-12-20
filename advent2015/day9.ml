@@ -1,27 +1,17 @@
 (* To make it weird, I'm doing this one without Base, and using Stdlib and a
    tiny bit of Containers instead. Maybe I should be using `open Containers`? *)
 
-type city = string
-[@@deriving ord]
+type city = string [@@deriving ord]
 
 module CityPair = struct
-  type t = city * city
-  [@@deriving ord]
+  type t = city * city [@@deriving ord]
 end
 
 module DistanceMap = Map.Make (CityPair)
 module CitySet = Set.Make (String)
+module CityPermutator = Util.Permutator.Make (CitySet)
 
-let rec permutations cities =
-  if CitySet.cardinal cities = 1 then Seq.return (CitySet.elements cities)
-  else
-    let cities_seq = CitySet.to_seq cities in
-    cities_seq
-    |> Seq.flat_map (fun city ->
-           let other_cities = CitySet.remove city cities in
-           let permutations_of_others = permutations other_cities in
-           permutations_of_others
-           |> Seq.map (fun permutation -> city :: permutation))
+let permutations = CityPermutator.permutations
 
 let distance_between ~distances city1 city2 =
   try DistanceMap.find (city1, city2) distances

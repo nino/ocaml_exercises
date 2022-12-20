@@ -1,6 +1,6 @@
 (executable
   (name advent2015)
   (public_name advent2015)
-  (libraries base base.md5 stdio unix re containers yojson)
+  (libraries base base.md5 stdio unix re containers yojson util)
   (preprocess
     (pps ppx_deriving.ord ppx_compare ppx_hash ppx_let ppx_show ppx_sexp_conv)))
